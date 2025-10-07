@@ -1,0 +1,1 @@
+# For DAO or repository layer
