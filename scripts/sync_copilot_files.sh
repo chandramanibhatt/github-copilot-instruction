@@ -1,1 +1,6 @@
-# Script to sync all relevant files
+#!/bin/bash
+set -e
+echo "🔄 Syncing Copilot files from  test-------1111."
+
+
+
