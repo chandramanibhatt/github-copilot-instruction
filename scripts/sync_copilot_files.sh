@@ -26,7 +26,7 @@ if [ -f "$REPO_ROOT/pom.xml" ]; then
 elif [ -f "$REPO_ROOT/requirements.txt" ] || [ -d "$REPO_ROOT/app" ]; then
     LANG="python"
 else
-    LANG="unknown"
+    LANG="java"
 fi
 echo "Detected language: $LANG"
 
