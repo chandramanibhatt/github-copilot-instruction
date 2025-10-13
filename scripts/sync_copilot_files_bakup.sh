@@ -1,26 +1,22 @@
 #!/bin/bash
 set -e
-echo "🔄 Syncing Copilot files from  test-------1111."
-#exit 1
-# ----------------------------
-# Central Copilot repo URL
-# ----------------------------
-COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git"
+
+COPILOT_REPO_RAW="https://raw.githubusercontent.com/chandramanibhatt/github-copilot-instruction/main"
 REPO_ROOT=$(git rev-parse --show-toplevel)
 
-echo "🔄 Syncing Copilot files from $COPILOT_REPO..."
-
-# ----------------------------
-# 1️⃣ Sync global copilot-instructions.md
-# ----------------------------
+# 1️⃣ Sync global copilot-instructions.md only if source exists and is not empty
 TARGET_COPILOT_FILE="$REPO_ROOT/.github/copilot-instructions.md"
+SOURCE_COPILOT_FILE="$COPILOT_REPO_RAW/copilot-instructions.md"
 mkdir -p "$(dirname "$TARGET_COPILOT_FILE")"
-curl -s -o "$TARGET_COPILOT_FILE" "$COPILOT_REPO/copilot-instructions.md"
-echo "✅ Updated: $TARGET_COPILOT_FILE"
+COPILOT_CONTENT=$(curl -s "$SOURCE_COPILOT_FILE")
+if [ -n "$COPILOT_CONTENT" ]; then
+  echo "$COPILOT_CONTENT" > "$TARGET_COPILOT_FILE"
+  echo "✅ Updated: $TARGET_COPILOT_FILE"
+else
+  echo "⚠️ Source copilot-instructions.md not found or empty. Skipping."
+fi
 
-# ----------------------------
 # 2️⃣ Detect language (Java or Python)
-# ----------------------------
 if [ -f "$REPO_ROOT/pom.xml" ]; then
     LANG="java"
 elif [ -f "$REPO_ROOT/requirements.txt" ] || [ -d "$REPO_ROOT/app" ]; then
@@ -30,26 +26,34 @@ else
 fi
 echo "Detected language: $LANG"
 
-# ----------------------------
-# 3️⃣ Sync AGENTS.md based on language
-# ----------------------------
+# 3️⃣ Sync AGENTS.md based on language, only if source exists and is not empty
 if [ "$LANG" == "java" ]; then
     echo "📘 Syncing Java AGENTS.md files..."
     BASE_PATH="$REPO_ROOT/webapp/src/main/java/com/cisco/collab/ucmgmt"
     mkdir -p "$BASE_PATH"
 
-    # Global Java rules
-    curl -s -o "$BASE_PATH/AGENTS.md" "$COPILOT_REPO/java/AGENTS.md"
-    echo "✅ $BASE_PATH/AGENTS.md"
+    # Common Java rules
+    COMMON_SRC="$COPILOT_REPO_RAW/AGENTS/java/common/AGENTS.md"
+    COMMON_TARGET="$BASE_PATH/AGENTS.md"
+    COMMON_CONTENT=$(curl -s "$COMMON_SRC")
+    if [ -n "$COMMON_CONTENT" ]; then
+      echo "$COMMON_CONTENT" > "$COMMON_TARGET"
+      echo "✅ $COMMON_TARGET"
+    else
+      echo "⚠️ $COMMON_SRC not found or empty. Skipping."
+    fi
 
     # Layer-specific rules
     for layer in api daos models services utils; do
         TARGET="$BASE_PATH/$layer/AGENTS.md"
         mkdir -p "$(dirname "$TARGET")"
-        SOURCE="$COPILOT_REPO/java/$layer/AGENTS.md"
-        if curl --output /dev/null --silent --head --fail "$SOURCE"; then
-            curl -s -o "$TARGET" "$SOURCE"
-            echo "✅ $TARGET"
+        SOURCE="$COPILOT_REPO_RAW/AGENTS/java/$layer/AGENTS.md"
+        CONTENT=$(curl -s "$SOURCE")
+        if [ -n "$CONTENT" ]; then
+          echo "$CONTENT" > "$TARGET"
+          echo "✅ $TARGET"
+        else
+          echo "⚠️ $SOURCE not found or empty. Skipping."
         fi
     done
 
@@ -59,17 +63,27 @@ elif [ "$LANG" == "python" ]; then
     mkdir -p "$BASE_PATH"
 
     # Common Python rules
-    curl -s -o "$BASE_PATH/AGENTS.md" "$COPILOT_REPO/python/common/AGENTS.md"
-    echo "✅ $BASE_PATH/AGENTS.md"
+    COMMON_SRC="$COPILOT_REPO_RAW/AGENTS/python/common/AGENTS.md"
+    COMMON_TARGET="$BASE_PATH/AGENTS.md"
+    COMMON_CONTENT=$(curl -s "$COMMON_SRC")
+    if [ -n "$COMMON_CONTENT" ]; then
+      echo "$COMMON_CONTENT" > "$COMMON_TARGET"
+      echo "✅ $COMMON_TARGET"
+    else
+      echo "⚠️ $COMMON_SRC not found or empty. Skipping."
+    fi
 
     # Layer-specific rules
     for layer in api models services utils; do
         TARGET="$BASE_PATH/$layer/AGENTS.md"
         mkdir -p "$(dirname "$TARGET")"
-        SOURCE="$COPILOT_REPO/python/$layer/AGENTS.md"
-        if curl --output /dev/null --silent --head --fail "$SOURCE"; then
-            curl -s -o "$TARGET" "$SOURCE"
-            echo "✅ $TARGET"
+        SOURCE="$COPILOT_REPO_RAW/AGENTS/python/$layer/AGENTS.md"
+        CONTENT=$(curl -s "$SOURCE")
+        if [ -n "$CONTENT" ]; then
+          echo "$CONTENT" > "$TARGET"
+          echo "✅ $TARGET"
+        else
+          echo "⚠️ $SOURCE not found or empty. Skipping."
         fi
     done
 else
