@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 echo "🔄 Syncing Copilot files from  test-------1111."
-exit 1
+#exit 1
 # ----------------------------
 # Central Copilot repo URL
 # ----------------------------
