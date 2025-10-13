@@ -6,12 +6,16 @@ COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git
 CACHE_DIR="${HOME}/.cache/github-copilot-instruction"
 REPO_ROOT=$(git rev-parse --show-toplevel)
 
-# Clone or pull latest
+# Clone or pull latest with force fetch
 if [ -d "$CACHE_DIR/.git" ]; then
-  echo "📥 Pulling latest changes..."
-  git -C "$CACHE_DIR" pull --quiet
+  echo "📥 Fetching latest changes..."
+  git -C "$CACHE_DIR" fetch --all --prune
+  echo "📥 Resetting to latest..."
+  git -C "$CACHE_DIR" reset --hard origin/main
+  git -C "$CACHE_DIR" clean -fd
 else
   echo "📥 Cloning repository..."
+  rm -rf "$CACHE_DIR"
   git clone --depth 1 "$COPILOT_REPO" "$CACHE_DIR"
 fi
 
