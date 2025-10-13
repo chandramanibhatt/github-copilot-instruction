@@ -5,7 +5,7 @@ echo "🔄 Syncing Copilot files from  test-------1111."
 # ----------------------------
 # Central Copilot repo URL
 # ----------------------------
-COPILOT_REPO="https://raw.githubusercontent.com/<org>/github-copilot-instruction/main"
+COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git"
 REPO_ROOT=$(git rev-parse --show-toplevel)
 
 echo "🔄 Syncing Copilot files from $COPILOT_REPO..."
