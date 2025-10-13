@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 echo "🔄 Syncing Copilot files from  test-------1111."
-exit 1
+#exit 1
 # ----------------------------
 # Central Copilot repo URL
 # ----------------------------
-COPILOT_REPO="https://raw.githubusercontent.com/<org>/github-copilot-instruction/main"
+COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git"
 REPO_ROOT=$(git rev-parse --show-toplevel)
 
 echo "🔄 Syncing Copilot files from $COPILOT_REPO..."
@@ -26,7 +26,7 @@ if [ -f "$REPO_ROOT/pom.xml" ]; then
 elif [ -f "$REPO_ROOT/requirements.txt" ] || [ -d "$REPO_ROOT/app" ]; then
     LANG="python"
 else
-    LANG="unknown"
+    LANG="java"
 fi
 echo "Detected language: $LANG"
 
