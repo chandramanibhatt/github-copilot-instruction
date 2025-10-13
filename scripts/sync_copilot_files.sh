@@ -30,7 +30,12 @@ if [ -f "$SOURCE_COPILOT_FILE" ] && [ -s "$SOURCE_COPILOT_FILE" ]; then
   cp "$SOURCE_COPILOT_FILE" "$TARGET_COPILOT_FILE"
   echo "✅ Updated: $TARGET_COPILOT_FILE"
 else
-  echo "⚠️ Source copilot-instructions.md not found or empty. Skipping."
+  if [ -f "$TARGET_COPILOT_FILE" ]; then
+    rm "$TARGET_COPILOT_FILE"
+    echo "🗑️ Deleted: $TARGET_COPILOT_FILE (not in remote)"
+  else
+    echo "⚠️ Source copilot-instructions.md not found. Skipping."
+  fi
 fi
 
 # 2️⃣ Detect language
@@ -56,7 +61,10 @@ if [ "$LANG" == "java" ]; then
       cp "$COMMON_SRC" "$COMMON_TARGET"
       echo "✅ $COMMON_TARGET"
     else
-      echo "⚠️ $COMMON_SRC not found or empty. Skipping."
+      if [ -f "$COMMON_TARGET" ]; then
+        rm "$COMMON_TARGET"
+        echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+      fi
     fi
 
     # Layer-specific rules
@@ -68,7 +76,10 @@ if [ "$LANG" == "java" ]; then
           cp "$SOURCE" "$TARGET"
           echo "✅ $TARGET"
         else
-          echo "⚠️ $SOURCE not found or empty. Skipping."
+          if [ -f "$TARGET" ]; then
+            rm "$TARGET"
+            echo "🗑️ Deleted: $TARGET (not in remote)"
+          fi
         fi
     done
 
@@ -84,7 +95,10 @@ elif [ "$LANG" == "python" ]; then
       cp "$COMMON_SRC" "$COMMON_TARGET"
       echo "✅ $COMMON_TARGET"
     else
-      echo "⚠️ $COMMON_SRC not found or empty. Skipping."
+      if [ -f "$COMMON_TARGET" ]; then
+        rm "$COMMON_TARGET"
+        echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+      fi
     fi
 
     # Layer-specific rules
@@ -96,7 +110,10 @@ elif [ "$LANG" == "python" ]; then
           cp "$SOURCE" "$TARGET"
           echo "✅ $TARGET"
         else
-          echo "⚠️ $SOURCE not found or empty. Skipping."
+          if [ -f "$TARGET" ]; then
+            rm "$TARGET"
+            echo "🗑️ Deleted: $TARGET (not in remote)"
+          fi
         fi
     done
 else
