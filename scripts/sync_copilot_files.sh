@@ -4,6 +4,9 @@ set -e
 COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git"
 CACHE_DIR="${HOME}/.cache/github-copilot-instruction"
 REPO_ROOT=$(git rev-parse --show-toplevel)
+# Define layer arrays for different languages
+JAVA_LAYERS=("api" "daos" "models" "services" "utils" "enums" "beans")
+PYTHON_LAYERS=("api" "models" "services" "utils")
 
 # Clone or pull latest with force fetch
 if [ -d "$CACHE_DIR/.git" ]; then
@@ -79,7 +82,7 @@ if [ "$LANG" == "java" ]; then
         fi
 
         # Layer-specific rules - search for each directory
-        for layer in api daos models services utils; do
+        for layer in "${JAVA_LAYERS[@]}"; do
             LAYER_DIR=$(find "$BASE_PATH" -maxdepth 1 -type d -name "$layer" -print -quit)
 
             if [ -n "$LAYER_DIR" ] && [ -d "$LAYER_DIR" ]; then
@@ -127,7 +130,7 @@ elif [ "$LANG" == "python" ]; then
         fi
 
         # Layer-specific rules - search for each directory
-        for layer in api models services utils; do
+        for layer in "${PYTHON_LAYERS[@]}"; do
             LAYER_DIR=$(find "$BASE_PATH" -maxdepth 1 -type d -name "$layer" -print -quit)
 
             if [ -n "$LAYER_DIR" ] && [ -d "$LAYER_DIR" ]; then
