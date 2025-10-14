@@ -43,12 +43,12 @@ else
 fi
 
 # 2️⃣ Detect language
-if [ -f "$REPO_ROOT/pom.xml" ]; then
+if [ -f "$REPO_ROOT/pom.xml" ] || [ -n "$(find "$REPO_ROOT" -type f -name "web.xml" -path "*/WEB-INF/*" -print -quit)" ]; then
     LANG="java"
 elif [ -f "$REPO_ROOT/requirements.txt" ] || [ -d "$REPO_ROOT/app" ]; then
     LANG="python"
 else
-    LANG="java"
+    LANG="unknown"
 fi
 echo "Detected language: $LANG"
 
