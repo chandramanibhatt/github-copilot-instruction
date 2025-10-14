@@ -41,7 +41,7 @@ else
     rm "$TARGET_COPILOT_FILE"
     # echo "🗑️ Deleted: $TARGET_COPILOT_FILE (source not found or empty)"
   else
-    # echo "⚠️ Source copilot-instructions.md not found or empty. No target created."
+    echo "⚠️ Source copilot-instructions.md not found or empty. No target created."
   fi
 fi
 
