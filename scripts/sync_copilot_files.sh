@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-echo "🎉 Copilot files sync started===="
-
 COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git"
 CACHE_DIR="${HOME}/.cache/github-copilot-instruction"
 REPO_ROOT=$(git rev-parse --show-toplevel)
@@ -22,11 +20,16 @@ fi
 
 echo "✅ Repository synced to: $CACHE_DIR"
 
+# Helper function to check if file has meaningful content
+has_content() {
+  [ -f "$1" ] && [ -s "$1" ] && [ -n "$(grep -v '^[[:space:]]*$' "$1")" ]
+}
+
 # 1️⃣ Sync global copilot-instructions.md
 TARGET_COPILOT_FILE="$REPO_ROOT/.github/copilot-instructions.md"
 SOURCE_COPILOT_FILE="$CACHE_DIR/copilot-instructions.md"
 
-if [ -f "$SOURCE_COPILOT_FILE" ] && [ -s "$SOURCE_COPILOT_FILE" ]; then
+if has_content "$SOURCE_COPILOT_FILE"; then
   mkdir -p "$(dirname "$TARGET_COPILOT_FILE")"
   cp "$SOURCE_COPILOT_FILE" "$TARGET_COPILOT_FILE"
   echo "✅ Updated: $TARGET_COPILOT_FILE"
@@ -57,7 +60,7 @@ if [ "$LANG" == "java" ]; then
     # Common Java rules
     COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
     COMMON_TARGET="$BASE_PATH/AGENTS.md"
-    if [ -f "$COMMON_SRC" ] && [ -s "$COMMON_SRC" ]; then
+    if has_content "$COMMON_SRC"; then
       mkdir -p "$BASE_PATH"
       cp "$COMMON_SRC" "$COMMON_TARGET"
       echo "✅ $COMMON_TARGET"
@@ -72,7 +75,7 @@ if [ "$LANG" == "java" ]; then
     for layer in api daos models services utils; do
         SOURCE="$CACHE_DIR/AGENTS/java/$layer/AGENTS.md"
         TARGET="$BASE_PATH/$layer/AGENTS.md"
-        if [ -f "$SOURCE" ] && [ -s "$SOURCE" ]; then
+        if has_content "$SOURCE"; then
           mkdir -p "$(dirname "$TARGET")"
           cp "$SOURCE" "$TARGET"
           echo "✅ $TARGET"
@@ -91,7 +94,7 @@ elif [ "$LANG" == "python" ]; then
     # Common Python rules
     COMMON_SRC="$CACHE_DIR/AGENTS/python/common/AGENTS.md"
     COMMON_TARGET="$BASE_PATH/AGENTS.md"
-    if [ -f "$COMMON_SRC" ] && [ -s "$COMMON_SRC" ]; then
+    if has_content "$COMMON_SRC"; then
       mkdir -p "$BASE_PATH"
       cp "$COMMON_SRC" "$COMMON_TARGET"
       echo "✅ $COMMON_TARGET"
@@ -106,7 +109,7 @@ elif [ "$LANG" == "python" ]; then
     for layer in api models services utils; do
         SOURCE="$CACHE_DIR/AGENTS/python/$layer/AGENTS.md"
         TARGET="$BASE_PATH/$layer/AGENTS.md"
-        if [ -f "$SOURCE" ] && [ -s "$SOURCE" ]; then
+        if has_content "$SOURCE"; then
           mkdir -p "$(dirname "$TARGET")"
           cp "$SOURCE" "$TARGET"
           echo "✅ $TARGET"
