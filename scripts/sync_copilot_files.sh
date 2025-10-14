@@ -63,7 +63,7 @@ if [ "$LANG" == "java" ]; then
     API_DIR=$(find "$REPO_ROOT" -type d -name "api" -path "*/src/main/java/*" -print -quit)
 
     if [ -z "$API_DIR" ]; then
-        # echo "⚠️ Java API directory not found, skipping AGENTS.md sync"
+        echo "⚠️ Java API directory not found, skipping AGENTS.md sync"
     else
         BASE_PATH=$(dirname "$API_DIR")
          # echo "✅ Found base path: $BASE_PATH"
