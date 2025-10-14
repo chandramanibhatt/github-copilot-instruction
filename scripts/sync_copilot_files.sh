@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
-echo "✅ Testing11-----------------"
+
+echo "🎉 Copilot files sync started===="
 
 COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git"
 CACHE_DIR="${HOME}/.cache/github-copilot-instruction"
@@ -63,7 +64,7 @@ if [ "$LANG" == "java" ]; then
     else
       if [ -f "$COMMON_TARGET" ]; then
         rm "$COMMON_TARGET"
-        echo "🗑️ Deleted: $COMMON_TARGET (source not found or empty)"
+        echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
       fi
     fi
 
@@ -78,7 +79,7 @@ if [ "$LANG" == "java" ]; then
         else
           if [ -f "$TARGET" ]; then
             rm "$TARGET"
-            echo "🗑️ Deleted: $TARGET (source not found or empty)"
+            echo "🗑️ Deleted: $TARGET (not in remote)"
           fi
         fi
     done
@@ -97,7 +98,7 @@ elif [ "$LANG" == "python" ]; then
     else
       if [ -f "$COMMON_TARGET" ]; then
         rm "$COMMON_TARGET"
-        echo "🗑️ Deleted: $COMMON_TARGET (source not found or empty)"
+        echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
       fi
     fi
 
@@ -112,7 +113,7 @@ elif [ "$LANG" == "python" ]; then
         else
           if [ -f "$TARGET" ]; then
             rm "$TARGET"
-            echo "🗑️ Deleted: $TARGET (source not found or empty)"
+            echo "🗑️ Deleted: $TARGET (not in remote)"
           fi
         fi
     done
