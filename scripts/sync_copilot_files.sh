@@ -35,13 +35,13 @@ SOURCE_COPILOT_FILE="$CACHE_DIR/copilot-instructions.md"
 if has_content "$SOURCE_COPILOT_FILE"; then
   mkdir -p "$(dirname "$TARGET_COPILOT_FILE")"
   cp "$SOURCE_COPILOT_FILE" "$TARGET_COPILOT_FILE"
-  echo "✅ Updated: $TARGET_COPILOT_FILE"
+  # echo "✅ Updated: $TARGET_COPILOT_FILE"
 else
   if [ -f "$TARGET_COPILOT_FILE" ]; then
     rm "$TARGET_COPILOT_FILE"
-    echo "🗑️ Deleted: $TARGET_COPILOT_FILE (source not found or empty)"
+    # echo "🗑️ Deleted: $TARGET_COPILOT_FILE (source not found or empty)"
   else
-    echo "⚠️ Source copilot-instructions.md not found or empty. No target created."
+    # echo "⚠️ Source copilot-instructions.md not found or empty. No target created."
   fi
 fi
 
@@ -53,31 +53,31 @@ elif [ -f "$REPO_ROOT/requirements.txt" ] || [ -d "$REPO_ROOT/app" ]; then
 else
     LANG="unknown"
 fi
-echo "Detected language: $LANG"
+# echo "Detected language: $LANG"
 
 # 3️⃣ Sync AGENTS.md based on language
 if [ "$LANG" == "java" ]; then
-    echo "📘 Syncing Java AGENTS.md files..."
+    # echo "📘 Syncing Java AGENTS.md files..."
 
     # Find api directory dynamically
     API_DIR=$(find "$REPO_ROOT" -type d -name "api" -path "*/src/main/java/*" -print -quit)
 
     if [ -z "$API_DIR" ]; then
-        echo "⚠️ Java API directory not found, skipping AGENTS.md sync"
+        # echo "⚠️ Java API directory not found, skipping AGENTS.md sync"
     else
         BASE_PATH=$(dirname "$API_DIR")
-        echo "✅ Found base path: $BASE_PATH"
+         # echo "✅ Found base path: $BASE_PATH"
 
         # Common Java rules - place at BASE_PATH (parallel to api)
         COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
         COMMON_TARGET="$BASE_PATH/AGENTS.md"
         if has_content "$COMMON_SRC"; then
             cp "$COMMON_SRC" "$COMMON_TARGET"
-            echo "✅ $COMMON_TARGET"
+            # echo "✅ $COMMON_TARGET"
         else
             if [ -f "$COMMON_TARGET" ]; then
                 rm "$COMMON_TARGET"
-                echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+                # echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
             fi
         fi
 
@@ -91,11 +91,11 @@ if [ "$LANG" == "java" ]; then
 
                 if has_content "$SOURCE"; then
                     cp "$SOURCE" "$TARGET"
-                    echo "✅ $TARGET"
+                    # echo "✅ $TARGET"
                 else
                     if [ -f "$TARGET" ]; then
                         rm "$TARGET"
-                        echo "🗑️ Deleted: $TARGET (not in remote)"
+                        # echo "🗑️ Deleted: $TARGET (not in remote)"
                     fi
                 fi
             else
