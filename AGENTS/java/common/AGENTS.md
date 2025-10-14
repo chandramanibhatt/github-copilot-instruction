@@ -1,1 +1,1 @@
-
+# Common Java-level guidance (for all repos)
