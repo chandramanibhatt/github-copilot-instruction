@@ -1,1 +1,0 @@
-# For beans rules 
