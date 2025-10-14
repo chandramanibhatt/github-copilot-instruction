@@ -57,33 +57,42 @@ if [ "$LANG" == "java" ]; then
     echo "📘 Syncing Java AGENTS.md files..."
     BASE_PATH="$REPO_ROOT/webapp/src/main/java/com/cisco/collab/ucmgmt"
 
-    # Common Java rules
-    COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
-    COMMON_TARGET="$BASE_PATH/AGENTS.md"
-    if has_content "$COMMON_SRC"; then
-      mkdir -p "$BASE_PATH"
-      cp "$COMMON_SRC" "$COMMON_TARGET"
-      echo "✅ $COMMON_TARGET"
-    else
-      if [ -f "$COMMON_TARGET" ]; then
-        rm "$COMMON_TARGET"
-        echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+    # Common Java rules - place one level above api folder
+    API_DIR="$BASE_PATH/api"
+    if [ -d "$API_DIR" ]; then
+      COMMON_DIR=$(dirname "$API_DIR")
+      COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
+      COMMON_TARGET="$COMMON_DIR/AGENTS.md"
+      if has_content "$COMMON_SRC"; then
+        cp "$COMMON_SRC" "$COMMON_TARGET"
+        echo "✅ $COMMON_TARGET"
+      else
+        if [ -f "$COMMON_TARGET" ]; then
+          rm "$COMMON_TARGET"
+          echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+        fi
       fi
+    else
+      echo "⚠️ API directory not found, skipping common AGENTS.md"
     fi
 
     # Layer-specific rules
     for layer in api daos models services utils; do
-        SOURCE="$CACHE_DIR/AGENTS/java/$layer/AGENTS.md"
-        TARGET="$BASE_PATH/$layer/AGENTS.md"
-        if has_content "$SOURCE"; then
-          mkdir -p "$(dirname "$TARGET")"
-          cp "$SOURCE" "$TARGET"
-          echo "✅ $TARGET"
-        else
-          if [ -f "$TARGET" ]; then
-            rm "$TARGET"
-            echo "🗑️ Deleted: $TARGET (not in remote)"
+        LAYER_DIR="$BASE_PATH/$layer"
+        if [ -d "$LAYER_DIR" ]; then
+          SOURCE="$CACHE_DIR/AGENTS/java/$layer/AGENTS.md"
+          TARGET="$LAYER_DIR/AGENTS.md"
+          if has_content "$SOURCE"; then
+            cp "$SOURCE" "$TARGET"
+            echo "✅ $TARGET"
+          else
+            if [ -f "$TARGET" ]; then
+              rm "$TARGET"
+              echo "🗑️ Deleted: $TARGET (not in remote)"
+            fi
           fi
+        else
+          echo "⚠️ Directory $LAYER_DIR not found, skipping $layer AGENTS.md"
         fi
     done
 
@@ -91,33 +100,42 @@ elif [ "$LANG" == "python" ]; then
     echo "🐍 Syncing Python AGENTS.md files..."
     BASE_PATH="$REPO_ROOT/app"
 
-    # Common Python rules
-    COMMON_SRC="$CACHE_DIR/AGENTS/python/common/AGENTS.md"
-    COMMON_TARGET="$BASE_PATH/AGENTS.md"
-    if has_content "$COMMON_SRC"; then
-      mkdir -p "$BASE_PATH"
-      cp "$COMMON_SRC" "$COMMON_TARGET"
-      echo "✅ $COMMON_TARGET"
-    else
-      if [ -f "$COMMON_TARGET" ]; then
-        rm "$COMMON_TARGET"
-        echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+    # Common Python rules - place one level above api folder
+    API_DIR="$BASE_PATH/api"
+    if [ -d "$API_DIR" ]; then
+      COMMON_DIR=$(dirname "$API_DIR")
+      COMMON_SRC="$CACHE_DIR/AGENTS/python/common/AGENTS.md"
+      COMMON_TARGET="$COMMON_DIR/AGENTS.md"
+      if has_content "$COMMON_SRC"; then
+        cp "$COMMON_SRC" "$COMMON_TARGET"
+        echo "✅ $COMMON_TARGET"
+      else
+        if [ -f "$COMMON_TARGET" ]; then
+          rm "$COMMON_TARGET"
+          echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+        fi
       fi
+    else
+      echo "⚠️ API directory not found, skipping common AGENTS.md"
     fi
 
     # Layer-specific rules
     for layer in api models services utils; do
-        SOURCE="$CACHE_DIR/AGENTS/python/$layer/AGENTS.md"
-        TARGET="$BASE_PATH/$layer/AGENTS.md"
-        if has_content "$SOURCE"; then
-          mkdir -p "$(dirname "$TARGET")"
-          cp "$SOURCE" "$TARGET"
-          echo "✅ $TARGET"
-        else
-          if [ -f "$TARGET" ]; then
-            rm "$TARGET"
-            echo "🗑️ Deleted: $TARGET (not in remote)"
+        LAYER_DIR="$BASE_PATH/$layer"
+        if [ -d "$LAYER_DIR" ]; then
+          SOURCE="$CACHE_DIR/AGENTS/python/$layer/AGENTS.md"
+          TARGET="$LAYER_DIR/AGENTS.md"
+          if has_content "$SOURCE"; then
+            cp "$SOURCE" "$TARGET"
+            echo "✅ $TARGET"
+          else
+            if [ -f "$TARGET" ]; then
+              rm "$TARGET"
+              echo "🗑️ Deleted: $TARGET (not in remote)"
+            fi
           fi
+        else
+          echo "⚠️ Directory $LAYER_DIR not found, skipping $layer AGENTS.md"
         fi
     done
 else
