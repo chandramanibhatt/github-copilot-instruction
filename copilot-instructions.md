@@ -8,6 +8,7 @@ When generating code for any file in this repository, the coding assistant shoul
 2. **Apply Directory Rules**: If `AGENTS.md` exists in the current directory, follow the coding rules and guidelines specified in that file
 3. **Hierarchy Precedence**: If no `AGENTS.md` exists in the current directory, check parent directories up to the repository root
 4. **Fallback to Defaults**: If no `AGENTS.md` file is found in any parent directory, use standard coding practices for the detected language/framework
+5. Always use camelCase for variables.
 
 ## AGENTS.md File Format
 
