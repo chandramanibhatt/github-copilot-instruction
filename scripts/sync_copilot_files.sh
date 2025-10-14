@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+echo "✅ Testing11-----------------"
 
 COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git"
 CACHE_DIR="${HOME}/.cache/github-copilot-instruction"
