@@ -55,89 +55,99 @@ echo "Detected language: $LANG"
 # 3️⃣ Sync AGENTS.md based on language
 if [ "$LANG" == "java" ]; then
     echo "📘 Syncing Java AGENTS.md files..."
-    BASE_PATH="$REPO_ROOT/webapp/src/main/java/com/cisco/collab/ucmgmt"
 
-    # Common Java rules - place one level above api folder
-    API_DIR="$BASE_PATH/api"
-    if [ -d "$API_DIR" ]; then
-      COMMON_DIR=$(dirname "$API_DIR")
-      COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
-      COMMON_TARGET="$COMMON_DIR/AGENTS.md"
-      if has_content "$COMMON_SRC"; then
-        cp "$COMMON_SRC" "$COMMON_TARGET"
-        echo "✅ $COMMON_TARGET"
-      else
-        if [ -f "$COMMON_TARGET" ]; then
-          rm "$COMMON_TARGET"
-          echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
-        fi
-      fi
+    # Find api directory dynamically
+    API_DIR=$(find "$REPO_ROOT" -type d -name "api" -path "*/src/main/java/*" -print -quit)
+
+    if [ -z "$API_DIR" ]; then
+        echo "⚠️ Java API directory not found, skipping AGENTS.md sync"
     else
-      echo "⚠️ API directory not found, skipping common AGENTS.md"
-    fi
+        BASE_PATH=$(dirname "$API_DIR")
+        echo "✅ Found base path: $BASE_PATH"
 
-    # Layer-specific rules
-    for layer in api daos models services utils; do
-        LAYER_DIR="$BASE_PATH/$layer"
-        if [ -d "$LAYER_DIR" ]; then
-          SOURCE="$CACHE_DIR/AGENTS/java/$layer/AGENTS.md"
-          TARGET="$LAYER_DIR/AGENTS.md"
-          if has_content "$SOURCE"; then
-            cp "$SOURCE" "$TARGET"
-            echo "✅ $TARGET"
-          else
-            if [ -f "$TARGET" ]; then
-              rm "$TARGET"
-              echo "🗑️ Deleted: $TARGET (not in remote)"
-            fi
-          fi
+        # Common Java rules - place at BASE_PATH (parallel to api)
+        COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
+        COMMON_TARGET="$BASE_PATH/AGENTS.md"
+        if has_content "$COMMON_SRC"; then
+            cp "$COMMON_SRC" "$COMMON_TARGET"
+            echo "✅ $COMMON_TARGET"
         else
-          echo "⚠️ Directory $LAYER_DIR not found, skipping $layer AGENTS.md"
+            if [ -f "$COMMON_TARGET" ]; then
+                rm "$COMMON_TARGET"
+                echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+            fi
         fi
-    done
+
+        # Layer-specific rules - search for each directory
+        for layer in api daos models services utils; do
+            LAYER_DIR=$(find "$BASE_PATH" -maxdepth 1 -type d -name "$layer" -print -quit)
+
+            if [ -n "$LAYER_DIR" ] && [ -d "$LAYER_DIR" ]; then
+                SOURCE="$CACHE_DIR/AGENTS/java/$layer/AGENTS.md"
+                TARGET="$LAYER_DIR/AGENTS.md"
+
+                if has_content "$SOURCE"; then
+                    cp "$SOURCE" "$TARGET"
+                    echo "✅ $TARGET"
+                else
+                    if [ -f "$TARGET" ]; then
+                        rm "$TARGET"
+                        echo "🗑️ Deleted: $TARGET (not in remote)"
+                    fi
+                fi
+            else
+                echo "⚠️ Directory $layer not found in $BASE_PATH, skipping"
+            fi
+        done
+    fi
 
 elif [ "$LANG" == "python" ]; then
     echo "🐍 Syncing Python AGENTS.md files..."
-    BASE_PATH="$REPO_ROOT/app"
 
-    # Common Python rules - place one level above api folder
-    API_DIR="$BASE_PATH/api"
-    if [ -d "$API_DIR" ]; then
-      COMMON_DIR=$(dirname "$API_DIR")
-      COMMON_SRC="$CACHE_DIR/AGENTS/python/common/AGENTS.md"
-      COMMON_TARGET="$COMMON_DIR/AGENTS.md"
-      if has_content "$COMMON_SRC"; then
-        cp "$COMMON_SRC" "$COMMON_TARGET"
-        echo "✅ $COMMON_TARGET"
-      else
-        if [ -f "$COMMON_TARGET" ]; then
-          rm "$COMMON_TARGET"
-          echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
-        fi
-      fi
+    # Find api directory dynamically
+    API_DIR=$(find "$REPO_ROOT" -type d -name "api" -path "*/app/*" -print -quit)
+
+    if [ -z "$API_DIR" ]; then
+        echo "⚠️ Python API directory not found, skipping AGENTS.md sync"
     else
-      echo "⚠️ API directory not found, skipping common AGENTS.md"
-    fi
+        BASE_PATH=$(dirname "$API_DIR")
+        echo "✅ Found base path: $BASE_PATH"
 
-    # Layer-specific rules
-    for layer in api models services utils; do
-        LAYER_DIR="$BASE_PATH/$layer"
-        if [ -d "$LAYER_DIR" ]; then
-          SOURCE="$CACHE_DIR/AGENTS/python/$layer/AGENTS.md"
-          TARGET="$LAYER_DIR/AGENTS.md"
-          if has_content "$SOURCE"; then
-            cp "$SOURCE" "$TARGET"
-            echo "✅ $TARGET"
-          else
-            if [ -f "$TARGET" ]; then
-              rm "$TARGET"
-              echo "🗑️ Deleted: $TARGET (not in remote)"
-            fi
-          fi
+        # Common Python rules - place at BASE_PATH (parallel to api)
+        COMMON_SRC="$CACHE_DIR/AGENTS/python/common/AGENTS.md"
+        COMMON_TARGET="$BASE_PATH/AGENTS.md"
+        if has_content "$COMMON_SRC"; then
+            cp "$COMMON_SRC" "$COMMON_TARGET"
+            echo "✅ $COMMON_TARGET"
         else
-          echo "⚠️ Directory $LAYER_DIR not found, skipping $layer AGENTS.md"
+            if [ -f "$COMMON_TARGET" ]; then
+                rm "$COMMON_TARGET"
+                echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+            fi
         fi
-    done
+
+        # Layer-specific rules - search for each directory
+        for layer in api models services utils; do
+            LAYER_DIR=$(find "$BASE_PATH" -maxdepth 1 -type d -name "$layer" -print -quit)
+
+            if [ -n "$LAYER_DIR" ] && [ -d "$LAYER_DIR" ]; then
+                SOURCE="$CACHE_DIR/AGENTS/python/$layer/AGENTS.md"
+                TARGET="$LAYER_DIR/AGENTS.md"
+
+                if has_content "$SOURCE"; then
+                    cp "$SOURCE" "$TARGET"
+                    echo "✅ $TARGET"
+                else
+                    if [ -f "$TARGET" ]; then
+                        rm "$TARGET"
+                        echo "🗑️ Deleted: $TARGET (not in remote)"
+                    fi
+                fi
+            else
+                echo "⚠️ Directory $layer not found in $BASE_PATH, skipping"
+            fi
+        done
+    fi
 else
     echo "⚠️ Unknown project language. Skipping AGENTS.md sync."
 fi
