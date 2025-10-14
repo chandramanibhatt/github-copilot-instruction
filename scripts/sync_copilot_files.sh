@@ -23,17 +23,17 @@ echo "✅ Repository synced to: $CACHE_DIR"
 # 1️⃣ Sync global copilot-instructions.md
 TARGET_COPILOT_FILE="$REPO_ROOT/.github/copilot-instructions.md"
 SOURCE_COPILOT_FILE="$CACHE_DIR/copilot-instructions.md"
-mkdir -p "$(dirname "$TARGET_COPILOT_FILE")"
 
 if [ -f "$SOURCE_COPILOT_FILE" ] && [ -s "$SOURCE_COPILOT_FILE" ]; then
+  mkdir -p "$(dirname "$TARGET_COPILOT_FILE")"
   cp "$SOURCE_COPILOT_FILE" "$TARGET_COPILOT_FILE"
   echo "✅ Updated: $TARGET_COPILOT_FILE"
 else
   if [ -f "$TARGET_COPILOT_FILE" ]; then
     rm "$TARGET_COPILOT_FILE"
-    echo "🗑️ Deleted: $TARGET_COPILOT_FILE (not in remote)"
+    echo "🗑️ Deleted: $TARGET_COPILOT_FILE (source not found or empty)"
   else
-    echo "⚠️ Source copilot-instructions.md not found. Skipping."
+    echo "⚠️ Source copilot-instructions.md not found or empty. No target created."
   fi
 fi
 
@@ -51,18 +51,18 @@ echo "Detected language: $LANG"
 if [ "$LANG" == "java" ]; then
     echo "📘 Syncing Java AGENTS.md files..."
     BASE_PATH="$REPO_ROOT/webapp/src/main/java/com/cisco/collab/ucmgmt"
-    mkdir -p "$BASE_PATH"
 
     # Common Java rules
     COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
     COMMON_TARGET="$BASE_PATH/AGENTS.md"
     if [ -f "$COMMON_SRC" ] && [ -s "$COMMON_SRC" ]; then
+      mkdir -p "$BASE_PATH"
       cp "$COMMON_SRC" "$COMMON_TARGET"
       echo "✅ $COMMON_TARGET"
     else
       if [ -f "$COMMON_TARGET" ]; then
         rm "$COMMON_TARGET"
-        echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+        echo "🗑️ Deleted: $COMMON_TARGET (source not found or empty)"
       fi
     fi
 
@@ -70,14 +70,14 @@ if [ "$LANG" == "java" ]; then
     for layer in api daos models services utils; do
         SOURCE="$CACHE_DIR/AGENTS/java/$layer/AGENTS.md"
         TARGET="$BASE_PATH/$layer/AGENTS.md"
-        mkdir -p "$(dirname "$TARGET")"
         if [ -f "$SOURCE" ] && [ -s "$SOURCE" ]; then
+          mkdir -p "$(dirname "$TARGET")"
           cp "$SOURCE" "$TARGET"
           echo "✅ $TARGET"
         else
           if [ -f "$TARGET" ]; then
             rm "$TARGET"
-            echo "🗑️ Deleted: $TARGET (not in remote)"
+            echo "🗑️ Deleted: $TARGET (source not found or empty)"
           fi
         fi
     done
@@ -85,18 +85,18 @@ if [ "$LANG" == "java" ]; then
 elif [ "$LANG" == "python" ]; then
     echo "🐍 Syncing Python AGENTS.md files..."
     BASE_PATH="$REPO_ROOT/app"
-    mkdir -p "$BASE_PATH"
 
     # Common Python rules
     COMMON_SRC="$CACHE_DIR/AGENTS/python/common/AGENTS.md"
     COMMON_TARGET="$BASE_PATH/AGENTS.md"
     if [ -f "$COMMON_SRC" ] && [ -s "$COMMON_SRC" ]; then
+      mkdir -p "$BASE_PATH"
       cp "$COMMON_SRC" "$COMMON_TARGET"
       echo "✅ $COMMON_TARGET"
     else
       if [ -f "$COMMON_TARGET" ]; then
         rm "$COMMON_TARGET"
-        echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+        echo "🗑️ Deleted: $COMMON_TARGET (source not found or empty)"
       fi
     fi
 
@@ -104,14 +104,14 @@ elif [ "$LANG" == "python" ]; then
     for layer in api models services utils; do
         SOURCE="$CACHE_DIR/AGENTS/python/$layer/AGENTS.md"
         TARGET="$BASE_PATH/$layer/AGENTS.md"
-        mkdir -p "$(dirname "$TARGET")"
         if [ -f "$SOURCE" ] && [ -s "$SOURCE" ]; then
+          mkdir -p "$(dirname "$TARGET")"
           cp "$SOURCE" "$TARGET"
           echo "✅ $TARGET"
         else
           if [ -f "$TARGET" ]; then
             rm "$TARGET"
-            echo "🗑️ Deleted: $TARGET (not in remote)"
+            echo "🗑️ Deleted: $TARGET (source not found or empty)"
           fi
         fi
     done
