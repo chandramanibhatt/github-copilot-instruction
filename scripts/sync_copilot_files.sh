@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-echo "🔄 Syncing Copilot files from test-------1111."
 
 COPILOT_REPO="https://github.com/chandramanibhatt/github-copilot-instruction.git"
 CACHE_DIR="${HOME}/.cache/github-copilot-instruction"
