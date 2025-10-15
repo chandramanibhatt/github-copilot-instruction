@@ -1,4 +1,4 @@
-# Context-Based Rules for REST Endpoint Definitions
+# Context-Based Rules for REST Endpoint Definitions1
 
 This directory contains REST endpoint definitions using Spring's `@Controller` annotations. Follow these rules when defining or modifying endpoints:
 
