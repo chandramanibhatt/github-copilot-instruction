@@ -1,1 +1,2 @@
+Always use camel case 
 
