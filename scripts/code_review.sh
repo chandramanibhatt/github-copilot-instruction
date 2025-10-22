@@ -2,7 +2,7 @@
 #!/bin/bash
 set -e
 
-echo "Checking changes against rules in copilot-instructions.md..."
+echo "Checking changes against rules in copilot-instructions.md...test--"
 echo ""
 
 # Reattach to terminal for interactive prompts
