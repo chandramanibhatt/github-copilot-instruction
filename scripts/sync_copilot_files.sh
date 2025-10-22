@@ -60,7 +60,10 @@ if [ "$LANG" == "java" ]; then
     # echo "📘 Syncing Java AGENTS.md files..."
 
     # Find all api directories dynamically
-    mapfile -t API_DIRS < <(find "$REPO_ROOT" -type d -name "api" -path "*/src/main/java/*")
+    API_DIRS=()
+    while IFS= read -r dir; do
+        API_DIRS+=("$dir")
+    done < <(find "$REPO_ROOT" -type d -name "api" -path "*/src/main/java/*")
 
     if [ ${#API_DIRS[@]} -eq 0 ]; then
         echo "⚠️ Java API directory not found, skipping AGENTS.md sync"
@@ -110,7 +113,10 @@ elif [ "$LANG" == "python" ]; then
     echo "🐍 Syncing Python AGENTS.md files..."
 
     # Find all api directories dynamically
-    mapfile -t API_DIRS < <(find "$REPO_ROOT" -type d -name "api" -path "*/app/*")
+    API_DIRS=()
+    while IFS= read -r dir; do
+        API_DIRS+=("$dir")
+    done < <(find "$REPO_ROOT" -type d -name "api" -path "*/app/*")
 
     if [ ${#API_DIRS[@]} -eq 0 ]; then
         echo "⚠️ Python API directory not found, skipping AGENTS.md sync"
