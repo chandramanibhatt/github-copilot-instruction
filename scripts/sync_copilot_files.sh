@@ -59,98 +59,100 @@ fi
 if [ "$LANG" == "java" ]; then
     # echo "📘 Syncing Java AGENTS.md files..."
 
-    # Find api directory dynamically
-    API_DIR=$(find "$REPO_ROOT" -type d -name "api" -path "*/src/main/java/*" -print -quit)
-    echo "test--"
-    echo $API_DIR
+    # Find all api directories dynamically
+    mapfile -t API_DIRS < <(find "$REPO_ROOT" -type d -name "api" -path "*/src/main/java/*")
 
-    if [ -z "$API_DIR" ]; then
+    if [ ${#API_DIRS[@]} -eq 0 ]; then
         echo "⚠️ Java API directory not found, skipping AGENTS.md sync"
     else
-        BASE_PATH=$(dirname "$API_DIR")
-         # echo "✅ Found base path: $BASE_PATH"
+        for API_DIR in "${API_DIRS[@]}"; do
+            BASE_PATH=$(dirname "$API_DIR")
+            # echo "✅ Found base path: $BASE_PATH"
 
-        # Common Java rules - place at BASE_PATH (parallel to api)
-        COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
-        COMMON_TARGET="$BASE_PATH/AGENTS.md"
-        if has_content "$COMMON_SRC"; then
-            cp "$COMMON_SRC" "$COMMON_TARGET"
-            # echo "✅ $COMMON_TARGET"
-        else
-            if [ -f "$COMMON_TARGET" ]; then
-                rm "$COMMON_TARGET"
-                # echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
-            fi
-        fi
-
-        # Layer-specific rules - search for each directory
-        for layer in "${JAVA_LAYERS[@]}"; do
-            LAYER_DIR=$(find "$BASE_PATH" -maxdepth 1 -type d -name "$layer" -print -quit)
-
-            if [ -n "$LAYER_DIR" ] && [ -d "$LAYER_DIR" ]; then
-                SOURCE="$CACHE_DIR/AGENTS/java/$layer/AGENTS.md"
-                TARGET="$LAYER_DIR/AGENTS.md"
-
-                if has_content "$SOURCE"; then
-                    cp "$SOURCE" "$TARGET"
-                    # echo "✅ $TARGET"
-                else
-                    if [ -f "$TARGET" ]; then
-                        rm "$TARGET"
-                        # echo "🗑️ Deleted: $TARGET (not in remote)"
-                    fi
-                fi
+            # Common Java rules - place at BASE_PATH (parallel to api)
+            COMMON_SRC="$CACHE_DIR/AGENTS/java/common/AGENTS.md"
+            COMMON_TARGET="$BASE_PATH/AGENTS.md"
+            if has_content "$COMMON_SRC"; then
+                cp "$COMMON_SRC" "$COMMON_TARGET"
+                # echo "✅ $COMMON_TARGET"
             else
-                echo "⚠️ Directory $layer not found in $BASE_PATH, skipping"
+                if [ -f "$COMMON_TARGET" ]; then
+                    rm "$COMMON_TARGET"
+                    # echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+                fi
             fi
+
+            # Layer-specific rules - search for each directory
+            for layer in "${JAVA_LAYERS[@]}"; do
+                LAYER_DIR=$(find "$BASE_PATH" -maxdepth 1 -type d -name "$layer" -print -quit)
+
+                if [ -n "$LAYER_DIR" ] && [ -d "$LAYER_DIR" ]; then
+                    SOURCE="$CACHE_DIR/AGENTS/java/$layer/AGENTS.md"
+                    TARGET="$LAYER_DIR/AGENTS.md"
+
+                    if has_content "$SOURCE"; then
+                        cp "$SOURCE" "$TARGET"
+                        # echo "✅ $TARGET"
+                    else
+                        if [ -f "$TARGET" ]; then
+                            rm "$TARGET"
+                            # echo "🗑️ Deleted: $TARGET (not in remote)"
+                        fi
+                    fi
+                else
+                    echo "⚠️ Directory $layer not found in $BASE_PATH, skipping"
+                fi
+            done
         done
     fi
 
 elif [ "$LANG" == "python" ]; then
     echo "🐍 Syncing Python AGENTS.md files..."
 
-    # Find api directory dynamically
-    API_DIR=$(find "$REPO_ROOT" -type d -name "api" -path "*/app/*" -print -quit)
+    # Find all api directories dynamically
+    mapfile -t API_DIRS < <(find "$REPO_ROOT" -type d -name "api" -path "*/app/*")
 
-    if [ -z "$API_DIR" ]; then
+    if [ ${#API_DIRS[@]} -eq 0 ]; then
         echo "⚠️ Python API directory not found, skipping AGENTS.md sync"
     else
-        BASE_PATH=$(dirname "$API_DIR")
-        echo "✅ Found base path: $BASE_PATH"
+        for API_DIR in "${API_DIRS[@]}"; do
+            BASE_PATH=$(dirname "$API_DIR")
+            echo "✅ Found base path: $BASE_PATH"
 
-        # Common Python rules - place at BASE_PATH (parallel to api)
-        COMMON_SRC="$CACHE_DIR/AGENTS/python/common/AGENTS.md"
-        COMMON_TARGET="$BASE_PATH/AGENTS.md"
-        if has_content "$COMMON_SRC"; then
-            cp "$COMMON_SRC" "$COMMON_TARGET"
-            echo "✅ $COMMON_TARGET"
-        else
-            if [ -f "$COMMON_TARGET" ]; then
-                rm "$COMMON_TARGET"
-                echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
-            fi
-        fi
-
-        # Layer-specific rules - search for each directory
-        for layer in "${PYTHON_LAYERS[@]}"; do
-            LAYER_DIR=$(find "$BASE_PATH" -maxdepth 1 -type d -name "$layer" -print -quit)
-
-            if [ -n "$LAYER_DIR" ] && [ -d "$LAYER_DIR" ]; then
-                SOURCE="$CACHE_DIR/AGENTS/python/$layer/AGENTS.md"
-                TARGET="$LAYER_DIR/AGENTS.md"
-
-                if has_content "$SOURCE"; then
-                    cp "$SOURCE" "$TARGET"
-                    echo "✅ $TARGET"
-                else
-                    if [ -f "$TARGET" ]; then
-                        rm "$TARGET"
-                        echo "🗑️ Deleted: $TARGET (not in remote)"
-                    fi
-                fi
+            # Common Python rules - place at BASE_PATH (parallel to api)
+            COMMON_SRC="$CACHE_DIR/AGENTS/python/common/AGENTS.md"
+            COMMON_TARGET="$BASE_PATH/AGENTS.md"
+            if has_content "$COMMON_SRC"; then
+                cp "$COMMON_SRC" "$COMMON_TARGET"
+                echo "✅ $COMMON_TARGET"
             else
-                echo "⚠️ Directory $layer not found in $BASE_PATH, skipping"
+                if [ -f "$COMMON_TARGET" ]; then
+                    rm "$COMMON_TARGET"
+                    echo "🗑️ Deleted: $COMMON_TARGET (not in remote)"
+                fi
             fi
+
+            # Layer-specific rules - search for each directory
+            for layer in "${PYTHON_LAYERS[@]}"; do
+                LAYER_DIR=$(find "$BASE_PATH" -maxdepth 1 -type d -name "$layer" -print -quit)
+
+                if [ -n "$LAYER_DIR" ] && [ -d "$LAYER_DIR" ]; then
+                    SOURCE="$CACHE_DIR/AGENTS/python/$layer/AGENTS.md"
+                    TARGET="$LAYER_DIR/AGENTS.md"
+
+                    if has_content "$SOURCE"; then
+                        cp "$SOURCE" "$TARGET"
+                        echo "✅ $TARGET"
+                    else
+                        if [ -f "$TARGET" ]; then
+                            rm "$TARGET"
+                            echo "🗑️ Deleted: $TARGET (not in remote)"
+                        fi
+                    fi
+                else
+                    echo "⚠️ Directory $layer not found in $BASE_PATH, skipping"
+                fi
+            done
         done
     fi
 else
