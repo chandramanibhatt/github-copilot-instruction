@@ -1,4 +1,4 @@
-# Copilot Instructions
+# Copilot Instruction
 
 ## Code Generation Rules
 
