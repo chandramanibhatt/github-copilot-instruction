@@ -61,6 +61,8 @@ if [ "$LANG" == "java" ]; then
 
     # Find api directory dynamically
     API_DIR=$(find "$REPO_ROOT" -type d -name "api" -path "*/src/main/java/*" -print -quit)
+    echo "test--"
+    echo $API_DIR
 
     if [ -z "$API_DIR" ]; then
         echo "⚠️ Java API directory not found, skipping AGENTS.md sync"
